@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,10 +13,15 @@ export class AppComponent implements OnInit {
 
   constructor() {
     try {
-      this.webkit = (window as any).webkit.messageHandlers;
-      window['willSetup'] = function(res) {
-        this.result = res;
-      };
+      const win = (window as any);
+      this.webkit = win.webkit.messageHandlers;
+      win.willSetup = (result: string) => this.willSetup(result);
+      win.willStartAuth = (result: string) => this.willStartAuth(result);
+      win.onPaymentsFlowSuccess = (result: string) => this.onPaymentsFlowSuccess(result);
+      win.onPaymentsFlowCanceled = (result: string) => this.onPaymentsFlowCanceled(result);
+      win.onPaymentsFlowError = (result: string) => this.onPaymentsFlowError(result);
+      win.didFinishScannerCodeReader = (result: string) => this.didFinishScannerCodeReader(result);
+      win.willRedirectFromScannerCodeReader = () => this.willRedirectFromScannerCodeReader();
     } catch (err) {
       this.result = err;
     }
@@ -35,12 +39,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  willSetup(result: string) {
+  public willSetup(result: string): string {
     try {
       this.result = result;
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
   askMeAuthentication() {
@@ -52,12 +57,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  willStartAuth(result: any) {
+  willStartAuth(result: string): string {
     try {
       this.result = result;
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
   startPaymentsFlow() {
@@ -72,28 +78,31 @@ export class AppComponent implements OnInit {
     }
   }
 
-  onPaymentsFlowSuccess(result: any) {
+  onPaymentsFlowSuccess(result: string): string {
     try {
       this.result = result.toString();
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
-  onPaymentsFlowCanceled(result: any) {
+  onPaymentsFlowCanceled(result: string): string {
     try {
       this.result = result.toString();
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
-  onPaymentsFlowError(result: any) {
+  onPaymentsFlowError(result: string): string {
     try {
       this.result = result.toString();
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
   showLoadingModal() {
@@ -138,15 +147,16 @@ export class AppComponent implements OnInit {
     }
   }
 
-  didFinishScannerCodeReader(result: string): void {
+  didFinishScannerCodeReader(result: string): string {
     try {
       this.result = result;
     } catch (err) {
       this.result = err;
     }
+    return this.result;
   }
 
-  willRedirectFromScannerCodeReader(result: any) {
+  willRedirectFromScannerCodeReader(): void {
     this.result = 'redirecto from scanner code';
   }
 
