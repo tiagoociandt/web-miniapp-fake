@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'FakeLocal';
+  title = 'Web Mini app Fake';
   result = '';
   webkit: any;
   timeLeft = 60;
