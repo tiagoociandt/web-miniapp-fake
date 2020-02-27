@@ -15,6 +15,9 @@ export class AppComponent implements OnInit {
   constructor() {
     try {
       this.webkit = (window as any).webkit.messageHandlers;
+      window['willSetup'] = function(res) {
+        this.result = res;
+      };
     } catch (err) {
       this.result = err;
     }
@@ -26,15 +29,15 @@ export class AppComponent implements OnInit {
   askMeSetup(): void {
     this.result = 'Aguardando...';
     try {
-      this.webkit.askMeSetup('');
+      this.webkit.askMeSetup.postMessage('');
     } catch (err) {
       this.result = err;
     }
   }
 
-  willSetup(result: any) {
+  willSetup(result: string) {
     try {
-      this.result = result.toString();
+      this.result = result;
     } catch (err) {
       this.result = err;
     }
@@ -43,7 +46,7 @@ export class AppComponent implements OnInit {
   askMeAuthentication() {
     this.result = 'Aguardando...';
     try {
-      this.webkit.askMeStartAuth('');
+      this.webkit.askMeStartAuth.postMessage('');
     } catch (err) {
       this.result = err;
     }
@@ -51,7 +54,7 @@ export class AppComponent implements OnInit {
 
   willStartAuth(result: any) {
     try {
-      this.result = result.toString();
+      this.result = result;
     } catch (err) {
       this.result = err;
     }
@@ -63,7 +66,7 @@ export class AppComponent implements OnInit {
       const response = {
         amount: 2.0
       };
-      this.webkit.startPaymentsFlow(JSON.stringify(response));
+      this.webkit.startPaymentsFlow.postMessage(JSON.stringify(response));
     } catch (err) {
       this.result = err;
     }
@@ -96,7 +99,7 @@ export class AppComponent implements OnInit {
   showLoadingModal() {
     this.result = 'Aguardando...';
     try {
-      this.webkit.showLoadingModal('');
+      this.webkit.showLoadingModal.postMessage('');
       this.hideLoadingModal();
     } catch (err) {
       this.result = err;
@@ -109,7 +112,7 @@ export class AppComponent implements OnInit {
         this.timeLeft--;
       } else {
         try {
-          this.webkit.hideLoadingModal('');
+          this.webkit.hideLoadingModal.postMessage('');
         } catch (err) {
           this.result = err;
         }
@@ -120,7 +123,7 @@ export class AppComponent implements OnInit {
   closeMiniApp(): void {
     this.result = 'Aguardando...';
     try {
-      this.webkit.closeMiniApp('');
+      this.webkit.closeMiniApp.postMessage('');
     } catch (err) {
       this.result = err;
     }
@@ -129,7 +132,7 @@ export class AppComponent implements OnInit {
   showScannerCodeReader(): void {
     this.result = 'Aguardando...';
     try {
-      this.webkit.showScannerCodeReader('');
+      this.webkit.showScannerCodeReader.postMessage('');
     } catch (err) {
       this.result = err;
     }

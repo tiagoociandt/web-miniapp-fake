@@ -164,11 +164,12 @@
     border-radius: 6px;
     padding-top: 45px;
     margin-top: 8px;
-    overflow: hidden;
+    overflow: auto;
     background-color: rgb(15, 15, 16);
   }
 
   .terminal::before {
+    overflow: auto;
     content: "\2022 \2022 \2022";
     position: absolute;
     top: 0;
@@ -185,7 +186,8 @@
 
   .terminal pre {
     font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-    color: white;
+    font-size: 10px;
+    color: lime;
     padding: 0 1rem 1rem;
     margin: 0;
   }
