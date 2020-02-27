@@ -62,7 +62,6 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "host": "10.51.159.18",
             "browserTarget": "web-miniapp-fake:build"
           },
           "configurations": {
