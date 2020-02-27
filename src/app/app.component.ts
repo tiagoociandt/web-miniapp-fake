@@ -138,6 +138,14 @@ export class AppComponent implements OnInit {
     }
   }
 
+  didFinishScannerCodeReader(result: string): void {
+    try {
+      this.result = result;
+    } catch (err) {
+      this.result = err;
+    }
+  }
+
   willRedirectFromScannerCodeReader(result: any) {
     this.result = 'redirecto from scanner code';
   }
