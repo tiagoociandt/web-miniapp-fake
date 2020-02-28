@@ -66,6 +66,7 @@
           },
           "configurations": {
             "production": {
+              "port": 8080,
               "browserTarget": "web-miniapp-fake:build:production"
             }
           }
