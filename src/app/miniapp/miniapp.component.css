@@ -103,6 +103,7 @@
     margin-top: 8px;
     overflow: unset;
     background-color: rgb(15, 15, 16);
+    word-wrap: break-word;
   }
 
   .terminal::before {

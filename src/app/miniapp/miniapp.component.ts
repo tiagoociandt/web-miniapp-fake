@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { CieloPay } from '../gateway/cielo-pay';
+import { Subject } from 'rxjs';
+import { PaymentFlowModel } from '../model/payment-flow-model';
 
 @Component({
   selector: 'app-miniapp',
@@ -7,162 +10,57 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./miniapp.component.css']
 })
 export class MiniappComponent implements OnInit {
-  public payment: PaymentFlowModel;
   result = '';
-  webkit: any;
-  timeLeft = 60;
-  interval: any;
-  constructor(private activateRoute: ActivatedRoute,
-              private rout: Router) {
-    try {
-      const win = (window as any);
-      this.webkit = win.webkit.messageHandlers;
-      win.willSetup = (result: string): string => this.willSetup(result);
-      win.willStartAuth = (result: string): string => this.willStartAuth(result);
-      win.onPaymentsFlowSuccess = (result: string): string => this.onPaymentsFlowSuccess(result);
-      win.onPaymentsFlowCanceled = (result: string): string => this.onPaymentsFlowCanceled(result);
-      win.onPaymentsFlowError = (result: string): string => this.onPaymentsFlowError(result);
-      win.didFinishScannerCodeReader = (result: string): string => this.didFinishScannerCodeReader(result);
-      win.willRedirectFromScannerCodeReader = (): void => this.willRedirectFromScannerCodeReader();
-      this.payment = new PaymentFlowModel();
-    } catch (err) {
-      this.result = err;
-    }
-  }
+  
+  constructor(private router: Router,
+              private cieloPay: CieloPay) { }
 
   ngOnInit(): void {
-  }
-
-  askMeSetup(): void {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.askMeSetup.postMessage('');
-    } catch (err) {
-      this.result = err;
-    }
-  }
-
-  willSetup(result: string): string {
-    try {
-      this.result = result;
-    } catch (err) {
-      this.result = err;
-    } finally {
-    }
-    return this.result;
-  }
-
-  askMeAuthentication() {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.askMeStartAuth.postMessage('');
-    } catch (err) {
-      this.result = err;
-    }
-  }
-
-  willStartAuth(result: string): string {
-    try {
-      this.result = result;
-    } catch (err) {
-      this.result = err;
-    }
-    return this.result;
-  }
-
-  startPaymentsFlow() {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.startPaymentsFlow.postMessage(JSON.stringify(this.payment));
-    } catch (err) {
-      this.result = err;
-    }
-  }
-
-  onPaymentsFlowSuccess(result: string): string {
-    try {
-      this.result = result.toString();
-    } catch (err) {
-      this.result = err;
-    }
-    return this.result;
-  }
-
-  onPaymentsFlowCanceled(result: string): string {
-    try {
-      this.result = result.toString();
-    } catch (err) {
-      this.result = err;
-    }
-    return this.result;
-  }
-
-  onPaymentsFlowError(result: string): string {
-    try {
-      this.result = result.toString();
-    } catch (err) {
-      this.result = err;
-    }
-    return this.result;
-  }
-
-  showLoadingModal() {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.showLoadingModal.postMessage('');
-      this.hideLoadingModal();
-    } catch (err) {
-      this.result = err;
-    }
-  }
-
-  hideLoadingModal() {
-    this.interval = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
+    this.cieloPay.willSetup.subscribe(
+    value => {
+      if (value) {
+        this.result = `ok: ${JSON.stringify(value)}`;
       } else {
-        try {
-          this.webkit.hideLoadingModal.postMessage('');
-        } catch (err) {
-          this.result = err;
-        }
+        this.result = 'null';
       }
-    }, 1000);
+    },
+    error => this.result = 'error'
+    );
+    this.cieloPay.willStartAuth.subscribe((value) => {
+      const json = JSON.stringify(value);
+      this.result = `ok: ${json}`;
+    });
+    this.cieloPay.onPaymentFlowSuccess.subscribe(value => {
+      this.result = value;
+    });
   }
 
-  closeMiniApp(): void {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.closeMiniApp.postMessage('');
-    } catch (err) {
-      this.result = err;
-    }
+  async goToSetup() {
+    await this.cieloPay.askMeSetup();
+    // this.cieloPay.willSetup.unsubscribe();
+    // this.router.navigate(['/setup']);
   }
 
-  showScannerCodeReader(): void {
-    this.result = 'Aguardando...';
-    try {
-      this.webkit.showScannerCodeReader.postMessage('');
-    } catch (err) {
-      this.result = err;
-    }
+  goToAuthentication() {
+    this.cieloPay.askMeAuth();
+    // this.router.navigate(['/authentication']);
   }
 
-  didFinishScannerCodeReader(result: string): string {
-    try {
-      this.result = result;
-    } catch (err) {
-      this.result = err;
-    }
-    return this.result;
+  goToPaymentFlow() {
+    const payment = new PaymentFlowModel();
+    payment.amount = 2.2;
+    this.cieloPay.startPaymentsFlow(payment);
   }
 
-  willRedirectFromScannerCodeReader(): void {
-    this.rout.navigate(['/scannerCode']);
+  goToLoading() {
+
   }
 
-}
+  goToScannerCode() {
 
-export class PaymentFlowModel {
-  public amount: number;
+  }
+
+  closeMiniApp() {
+    this.cieloPay.closeMiniApp();
+  }
 }
