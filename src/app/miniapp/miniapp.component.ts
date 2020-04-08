@@ -4,6 +4,7 @@ import { CieloPay } from '../gateway/cielo-pay';
 import { Subject } from 'rxjs';
 import { PaymentFlowModel } from '../model/payment-flow-model';
 import { AuthenticationModel } from '../model/authentication-model';
+import { SetupModel } from '../model/setup-model';
 
 @Component({
   selector: 'app-miniapp',
@@ -11,27 +12,33 @@ import { AuthenticationModel } from '../model/authentication-model';
   styleUrls: ['./miniapp.component.css']
 })
 export class MiniappComponent implements OnInit {
+
   result = '';
 
   constructor(private router: Router,
-              private gateway: CieloPay) { }
+              private cieloPay: CieloPay) { }
 
   ngOnInit(): void {
-    this.gateway.willSetup = (result: string) => {
-      const setup = JSON.parse(result);
-    };
-    this.gateway.willStartAuth = (result: string) => {
+    this.startInit();
+  }
+
+  startInit() {
+    this.cieloPay.setupSubscriber.subscribe((result) => {
+      AuthenticationModel.setup = result;
+      this.cieloPay.setupSubscriber.unsubscribe();
+    });
+    this.cieloPay.gateway.willStartAuth = (result: string) => {
       const auth: AuthenticationModel = JSON.parse(result);
       if (auth) {
         AuthenticationModel.current = auth;
       }
     };
-    this.gateway.askMeSetup();
-    this.gateway.askMeAuth();
+    this.cieloPay.gateway.askMeSetup();
+    this.cieloPay.gateway.askMeAuth();
   }
 
   goToSetup() {
-    this.router.navigate(['/setup']);
+    this.startInit();
   }
 
   goToAuthentication() {
@@ -51,7 +58,7 @@ export class MiniappComponent implements OnInit {
   }
 
   closeMiniApp() {
-    this.gateway.closeMiniApp();
+    this.cieloPay.gateway.closeMiniApp();
   }
 
   refundMiniApp() {
