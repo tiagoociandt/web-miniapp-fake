@@ -16,8 +16,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     RefundComponent
   ],
   exports: [
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSnackBarModule
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     BrowserAnimationsModule,
     MatInputModule,
     MatButtonModule,
-    MatCardModule,
     MatCardModule,
     ReactiveFormsModule
   ],

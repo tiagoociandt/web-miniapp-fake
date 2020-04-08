@@ -9,25 +9,47 @@ import { RefundFlowModel } from '../model/refund-flow-model';
     providedIn: 'any'
 })
 export class CieloPay implements ICieloPay {
+    private win = (window as any);
     private webkit: any;
-    readonly willSetup: Subject<SetupModel>;
-    readonly willStartAuth: Subject<AuthenticationModel>;
-    readonly onPaymentFlowSuccess: Subject<string>;
-    readonly onRefundFlowSuccess: Subject<string>;
-    readonly onRefundFlowError: Subject<string>;
 
-    count = 0;
+    get willSetup(): any {
+        return this.win.willSetup;
+    }
+    set willSetup(value: any) {
+        this.win.willSetup = value;
+    }
+
+    get willStartAuth(): any {
+        return this.win.willStartAuth;
+    }
+    set willStartAuth(value: any) {
+        this.win.willStartAuth = value;
+    }
+
+    get onPaymentFlowSuccess(): any {
+        return this.win.onPaymentFlowSuccess;
+    }
+    set onPaymentFlowSuccess(value: any) {
+        this.win.onPaymentFlowSuccess = value;
+    }
+
+    get onRefundFlowSuccess(): any {
+        return this.win.onRefundFlowSuccess;
+    }
+    set onRefundFlowSuccess(value: any) {
+        this.win.onRefundFlowSuccess = value;
+    }
+
+    get onRefundFlowError(): any {
+        return this.win.onRefundFlowError;
+    }
+    set onRefundFlowError(value: any) {
+        this.win.onRefundFlowError = value;
+    }
 
     constructor() {
         try {
-            const win = (window as any);
-            this.willSetup = new Subject<SetupModel>();
-            this.willStartAuth = new Subject<AuthenticationModel>();
-            this.onPaymentFlowSuccess = new Subject<string>();
-            this.onRefundFlowSuccess = new Subject<string>();
-            this.onRefundFlowError = new Subject<string>();
-            this.registerGlobalCallback(win);
-            this.webkit = win.webkit.messageHandlers;
+            this.webkit = this.win.webkit.messageHandlers;
         } catch (err) {
             console.log(err);
         }
@@ -49,9 +71,7 @@ export class CieloPay implements ICieloPay {
     }
     async startPaymentsFlow(payment: PaymentFlowModel) {
         try {
-            // this.webkit.startPaymentsFlow.postMessage(JSON.stringify(payment));
-            this.onPaymentFlowSuccess.next(`${this.count}`);
-            this.count++;
+            this.webkit.startPaymentsFlow.postMessage(payment);
         } catch (err) {
             this.log(err);
         }
@@ -87,7 +107,7 @@ export class CieloPay implements ICieloPay {
     async startRefundFlow(refund: RefundFlowModel) {
         try {
             const refundRequest = JSON.stringify(refund);
-            this.webkit.startRefundFlow.postMessage(refundRequest);
+            this.webkit.startRefundFlow.postMessage(refund);
         } catch (err) {
             this.log(err);
         }
@@ -96,86 +116,14 @@ export class CieloPay implements ICieloPay {
     private log(error: Error): void {
         console.log(error.message);
     }
-
-    private registerGlobalCallback(win: any) {
-        win.willSetup = (result: string): string => this.willSetupCallback(result);
-        win.willStartAuth = (result: string): string => this.willStartAuthCallback(result);
-        win.onPaymentsFlowSuccess = (result: string): string => this.onPaymentsFlowSuccessCallback(result);
-        win.onPaymentsFlowCanceled = (result: string): string => this.onPaymentsFlowCanceled(result);
-        win.onPaymentsFlowError = (result: string): string => this.onPaymentsFlowError(result);
-        win.didFinishScannerCodeReader = (result: string): string => this.didFinishScannerCodeReader(result);
-        win.willRedirectFromScannerCodeReader = (): void => this.willRedirectFromScannerCodeReader();
-        win.onRefundFlowSuccess = (result: string): string => this.refundFlowSuccess(result);
-        win.onRefundFlowError = (result: string): string => this.refundFlowError(result);
-    }
-
-    private willSetupCallback(result: string): string {
-        if (result) {
-            try {
-                this.willSetup.next(JSON.parse(result));
-                return result;
-            } catch (err) {
-                this.willSetup.error(err);
-            }
-        }
-        return '';
-    }
-
-    private willStartAuthCallback(result: string): string {
-        if (result) {
-            try {
-                const model = JSON.parse(result);
-                this.willStartAuth.next(model);
-                return result;
-            } catch (err) {
-                this.willStartAuth.error(err);
-            }
-        }
-        return '';
-    }
-
-    private onPaymentsFlowSuccessCallback(result: string): string {
-        if (result) {
-            try {
-                this.onPaymentFlowSuccess.next(result);
-                return result;
-            } catch (err) {
-                this.onPaymentFlowSuccess.error(err);
-            }
-        }
-        return result;
-    }
-
-    onPaymentsFlowCanceled(result: string): string {
-        return result;
-    }
-
-    onPaymentsFlowError(result: string): string {
-        return result;
-    }
-
-    didFinishScannerCodeReader(result: string): string {
-        return result;
-    }
-
-    willRedirectFromScannerCodeReader(): void {
-    }
-
-    refundFlowSuccess(result: string): string {
-        return result;
-    }
-
-    refundFlowError(result: string): string {
-        return result;
-    }
 }
 
 interface ICieloPay {
-    willSetup: Subject<SetupModel>;
-    willStartAuth: Subject<AuthenticationModel>;
-    onPaymentFlowSuccess: Subject<string>;
-    onRefundFlowSuccess: Subject<string>;
-    onRefundFlowError: Subject<string>;
+    willSetup: any;
+    willStartAuth: any;
+    onPaymentFlowSuccess: any;
+    onRefundFlowSuccess: any;
+    onRefundFlowError: any;
 
     askMeSetup(): void;
     askMeAuth(): void;

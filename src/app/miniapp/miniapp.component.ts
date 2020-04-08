@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CieloPay } from '../gateway/cielo-pay';
 import { Subject } from 'rxjs';
 import { PaymentFlowModel } from '../model/payment-flow-model';
+import { AuthenticationModel } from '../model/authentication-model';
 
 @Component({
   selector: 'app-miniapp',
@@ -13,43 +14,32 @@ export class MiniappComponent implements OnInit {
   result = '';
 
   constructor(private router: Router,
-              private cieloPay: CieloPay) { }
+              private gateway: CieloPay) { }
 
   ngOnInit(): void {
-    this.cieloPay.willSetup.subscribe(
-    value => {
-      if (value) {
-        this.result = `ok: ${JSON.stringify(value)}`;
-      } else {
-        this.result = 'null';
+    this.gateway.willSetup = (result: string) => {
+      const setup = JSON.parse(result);
+    };
+    this.gateway.willStartAuth = (result: string) => {
+      const auth: AuthenticationModel = JSON.parse(result);
+      if (auth) {
+        AuthenticationModel.current = auth;
       }
-    },
-    error => this.result = 'error'
-    );
-    this.cieloPay.willStartAuth.subscribe((value) => {
-      const json = JSON.stringify(value);
-      this.result = `ok: ${json}`;
-    });
-    this.cieloPay.onPaymentFlowSuccess.subscribe(value => {
-      this.result = value;
-    });
+    };
+    this.gateway.askMeSetup();
+    this.gateway.askMeAuth();
   }
 
-  async goToSetup() {
-    await this.cieloPay.askMeSetup();
-    // this.cieloPay.willSetup.unsubscribe();
-    // this.router.navigate(['/setup']);
+  goToSetup() {
+    this.router.navigate(['/setup']);
   }
 
   goToAuthentication() {
-    this.cieloPay.askMeAuth();
-    // this.router.navigate(['/authentication']);
+    this.router.navigate(['/authentication']);
   }
 
   goToPaymentFlow() {
-    const payment = new PaymentFlowModel();
-    payment.amount = 2.2;
-    this.cieloPay.startPaymentsFlow(payment);
+    this.router.navigate(['/payment']);
   }
 
   goToLoading() {
@@ -61,7 +51,7 @@ export class MiniappComponent implements OnInit {
   }
 
   closeMiniApp() {
-    this.cieloPay.closeMiniApp();
+    this.gateway.closeMiniApp();
   }
 
   refundMiniApp() {

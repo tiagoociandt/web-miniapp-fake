@@ -4,6 +4,10 @@ import { RefundFlowModel } from '../model/refund-flow-model';
 import { FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { config } from 'rxjs';
+import { Directionality } from '@angular/cdk/bidi';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-refund',
@@ -18,10 +22,16 @@ export class RefundComponent implements OnInit {
   message: string;
 
   constructor(private gateway: CieloPay,
-              private router: Router) {
+              private router: Router,
+              private snack: MatSnackBar) {
   }
 
   ngOnInit(): void {
+    this.gateway.onRefundFlowSuccess = (result) => {
+      this.snack.open(`👍 resultado: ${result}`, '', {
+        duration: 2000
+      });
+    };
   }
 
   requestRefund() {
@@ -32,7 +42,7 @@ export class RefundComponent implements OnInit {
     if (this.paymentIdFormControl.value) {
       const refund = new RefundFlowModel();
       refund.paymentId = this.paymentIdFormControl.value;
-      this.message = `start refund with payment ${refund.paymentId}`;
+      this.message = `⏱ start refund with payment ${refund.paymentId}`;
       this.gateway.startRefundFlow(refund);
     } else {
       this.message = 'invalid refund';
@@ -46,6 +56,10 @@ export class RefundComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/miniapps']);
+  }
+
+  closeSnack() {
+    this.snack._openedSnackBarRef.dismiss();
   }
 }
 
