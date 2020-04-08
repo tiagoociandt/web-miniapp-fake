@@ -15,22 +15,22 @@ export class MiniappComponent implements OnInit {
 
   result = '';
 
-  constructor(private router: Router,
-              private cieloPay: CieloPay) { }
+  constructor(private cieloPay: CieloPay,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.startInit();
   }
 
   startInit() {
-    this.cieloPay.setupSubscriber.subscribe((result) => {
-      AuthenticationModel.setup = result;
-      this.cieloPay.setupSubscriber.unsubscribe();
-    });
+    this.cieloPay.gateway.willSetup = (result: string) => {
+      if (result) {
+        this.cieloPay.setup = JSON.parse(result);
+      }
+    };
     this.cieloPay.gateway.willStartAuth = (result: string) => {
-      const auth: AuthenticationModel = JSON.parse(result);
-      if (auth) {
-        AuthenticationModel.current = auth;
+      if (result) {
+        this.cieloPay.currentAuthentication = JSON.parse(result);
       }
     };
     this.cieloPay.gateway.askMeSetup();
@@ -38,7 +38,7 @@ export class MiniappComponent implements OnInit {
   }
 
   goToSetup() {
-    this.startInit();
+    this.router.navigate(['/setup']);
   }
 
   goToAuthentication() {

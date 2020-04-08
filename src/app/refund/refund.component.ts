@@ -5,9 +5,6 @@ import { FormControl, Validators, FormGroupDirective, NgForm } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { config } from 'rxjs';
-import { Directionality } from '@angular/cdk/bidi';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-refund',
@@ -21,9 +18,9 @@ export class RefundComponent implements OnInit {
 
   message: string;
 
-  constructor(private cieloPay: CieloPay,
-              private router: Router,
-              private snack: MatSnackBar) {
+  constructor(private router: Router,
+              private snack: MatSnackBar,
+              private cieloPay: CieloPay) {
   }
 
   ngOnInit(): void {

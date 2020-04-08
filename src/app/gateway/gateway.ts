@@ -1,12 +1,12 @@
 import { CieloPayGateway } from './cielo-pay-gateway';
+import { Injectable } from '@angular/core';
 import { RefundFlowModel } from '../model/refund-flow-model';
 import { PaymentFlowModel } from '../model/payment-flow-model';
-import { Injectable } from '@angular/core';
 
 @Injectable({
     providedIn: 'any'
 })
-export class AndroidGateway implements CieloPayGateway {
+export class Gateway implements CieloPayGateway {
     private win = (window as any);
     private webkit: any;
 
@@ -47,7 +47,11 @@ export class AndroidGateway implements CieloPayGateway {
 
     constructor() {
         try {
-            this.webkit = this.win;
+            if (this.win.webkit === undefined || this.win.webkit.messageHandlers === undefined) {
+                this.webkit = this.win;
+            } else {
+                this.webkit = this.win.webkit.messageHandlers;
+            }
         } catch (err) {
             console.log(err);
         }
@@ -55,14 +59,14 @@ export class AndroidGateway implements CieloPayGateway {
 
     async askMeSetup() {
         try {
-            this.webkit.askMeSetup.postMessage();
+            this.webkit.askMeSetup.postMessage('');
         } catch (err) {
             this.log(err);
         }
     }
     async askMeAuth() {
         try {
-            this.webkit.askMeStartAuth.postMessage();
+            this.webkit.askMeStartAuth.postMessage('');
         } catch (err) {
             this.log(err);
         }
@@ -76,34 +80,35 @@ export class AndroidGateway implements CieloPayGateway {
     }
     async showLoadingModal() {
         try {
-            this.webkit.showLoadingModal.postMessage();
+            this.webkit.showLoadingModal.postMessage('');
         } catch (err) {
             this.log(err);
         }
     }
     async hideLoadingModal() {
         try {
-            this.webkit.hideLoadingModal.postMessage();
+            this.webkit.hideLoadingModal.postMessage('');
         } catch (err) {
             this.log(err);
         }
     }
     async showScannerCodeReader() {
         try {
-            this.webkit.showScannerCodeReader.postMessage();
+            this.webkit.showScannerCodeReader.postMessage('');
         } catch (err) {
             this.log(err);
         }
     }
     async closeMiniApp() {
         try {
-            this.webkit.closeMiniApp.postMessage();
+            this.webkit.closeMiniApp.postMessage('');
         } catch (err) {
             this.log(err);
         }
     }
     async startRefundFlow(refund: RefundFlowModel) {
         try {
+            const refundRequest = JSON.stringify(refund);
             this.webkit.startRefundFlow.postMessage(refund);
         } catch (err) {
             this.log(err);
