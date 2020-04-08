@@ -45,12 +45,16 @@ export class Gateway implements CieloPayGateway {
         this.win.onRefundFlowError = value;
     }
 
+    private system = '';
+
     constructor() {
         try {
             if (this.win.webkit === undefined || this.win.webkit.messageHandlers === undefined) {
                 this.webkit = this.win;
+                this.system = 'android';
             } else {
                 this.webkit = this.win.webkit.messageHandlers;
+                this.system = 'ios';
             }
         } catch (err) {
             console.log(err);
@@ -101,7 +105,11 @@ export class Gateway implements CieloPayGateway {
     }
     async closeMiniApp() {
         try {
-            this.webkit.closeMiniApp.postMessage('');
+            if (this.system === 'ios') {
+                this.webkit.closeMiniApp.postMessage('');
+            } else {
+                this.webkit.closeMiniApp.postMessage();
+            }
         } catch (err) {
             this.log(err);
         }
