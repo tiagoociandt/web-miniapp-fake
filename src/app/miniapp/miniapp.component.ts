@@ -11,7 +11,7 @@ import { PaymentFlowModel } from '../model/payment-flow-model';
 })
 export class MiniappComponent implements OnInit {
   result = '';
-  
+
   constructor(private router: Router,
               private cieloPay: CieloPay) { }
 
@@ -62,5 +62,9 @@ export class MiniappComponent implements OnInit {
 
   closeMiniApp() {
     this.cieloPay.closeMiniApp();
+  }
+
+  refundMiniApp() {
+    this.router.navigate(['/refund']);
   }
 }

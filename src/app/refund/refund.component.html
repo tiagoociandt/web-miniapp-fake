@@ -1,0 +1,38 @@
+<div layout-fill>
+    
+    <ng-template #messageTemplate>
+        <mat-card>
+            <mat-card-title>Refund Flow</mat-card-title>
+            <mat-card-content>
+                {{ message }}
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="cancel()">Home</button>
+                <button mat-button (click)="restart()">Reiniciar</button>
+            </mat-card-actions>
+        </mat-card>
+    </ng-template>
+
+    <div *ngIf="!message;else messageTemplate">
+        <mat-card>
+            <mat-card-title>Refund Flow</mat-card-title>
+            <mat-card-content>
+                <div class="form-group">
+                    <mat-form-field class="full-width">
+                        <mat-label>Payment id</mat-label>
+                        <input matInput [formControl]="paymentIdFormControl" placeholder="Payment id"
+                            [errorStateMatcher]="matcher" />
+                        <mat-hint>Necessário informar o payment id</mat-hint>
+                        <mat-error *ngIf="paymentIdFormControl.hasError('required')">
+                            Payment id é <strong>obrigatório</strong>
+                        </mat-error>        
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="cancel()">Cancelar</button>
+                <button mat-button (click)="requestRefund()">Enviar</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

@@ -3,7 +3,7 @@ import { PaymentFlowModel } from '../model/payment-flow-model';
 import { Subject } from 'rxjs';
 import { SetupModel } from '../model/setup-model';
 import { AuthenticationModel } from '../model/authentication-model';
-import { $, $$ } from 'protractor';
+import { RefundFlowModel } from '../model/refund-flow-model';
 
 @Injectable({
     providedIn: 'any'
@@ -13,6 +13,8 @@ export class CieloPay implements ICieloPay {
     readonly willSetup: Subject<SetupModel>;
     readonly willStartAuth: Subject<AuthenticationModel>;
     readonly onPaymentFlowSuccess: Subject<string>;
+    readonly onRefundFlowSuccess: Subject<string>;
+    readonly onRefundFlowError: Subject<string>;
 
     count = 0;
 
@@ -22,6 +24,8 @@ export class CieloPay implements ICieloPay {
             this.willSetup = new Subject<SetupModel>();
             this.willStartAuth = new Subject<AuthenticationModel>();
             this.onPaymentFlowSuccess = new Subject<string>();
+            this.onRefundFlowSuccess = new Subject<string>();
+            this.onRefundFlowError = new Subject<string>();
             this.registerGlobalCallback(win);
             this.webkit = win.webkit.messageHandlers;
         } catch (err) {
@@ -80,6 +84,14 @@ export class CieloPay implements ICieloPay {
             this.log(err);
         }
     }
+    async startRefundFlow(refund: RefundFlowModel) {
+        try {
+            const refundRequest = JSON.stringify(refund);
+            this.webkit.startRefundFlow.postMessage(refundRequest);
+        } catch (err) {
+            this.log(err);
+        }
+    }
 
     private log(error: Error): void {
         console.log(error.message);
@@ -93,6 +105,8 @@ export class CieloPay implements ICieloPay {
         win.onPaymentsFlowError = (result: string): string => this.onPaymentsFlowError(result);
         win.didFinishScannerCodeReader = (result: string): string => this.didFinishScannerCodeReader(result);
         win.willRedirectFromScannerCodeReader = (): void => this.willRedirectFromScannerCodeReader();
+        win.onRefundFlowSuccess = (result: string): string => this.refundFlowSuccess(result);
+        win.onRefundFlowError = (result: string): string => this.refundFlowError(result);
     }
 
     private willSetupCallback(result: string): string {
@@ -146,13 +160,22 @@ export class CieloPay implements ICieloPay {
 
     willRedirectFromScannerCodeReader(): void {
     }
+
+    refundFlowSuccess(result: string): string {
+        return result;
+    }
+
+    refundFlowError(result: string): string {
+        return result;
+    }
 }
 
 interface ICieloPay {
-
     willSetup: Subject<SetupModel>;
     willStartAuth: Subject<AuthenticationModel>;
     onPaymentFlowSuccess: Subject<string>;
+    onRefundFlowSuccess: Subject<string>;
+    onRefundFlowError: Subject<string>;
 
     askMeSetup(): void;
     askMeAuth(): void;
@@ -161,4 +184,5 @@ interface ICieloPay {
     hideLoadingModal(): void;
     showScannerCodeReader(): void;
     closeMiniApp(): void;
+    startRefundFlow(refund: RefundFlowModel): void;
 }

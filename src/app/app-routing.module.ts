@@ -7,6 +7,7 @@ import { PaymentComponent } from './payment/payment.component';
 import { LoadingComponent } from './loading/loading.component';
 import { SetupComponent } from './setup/setup.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
+import { RefundComponent } from './refund/refund.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'authentication', component: AuthenticationComponent },
   { path: 'payment', component: PaymentComponent },
   { path: 'loading', component: LoadingComponent },
-  { path: 'scannerCode', component: ScannerCodeComponent }
+  { path: 'scannerCode', component: ScannerCodeComponent },
+  { path: 'refund', component: RefundComponent }
 ];
 
 @NgModule({
