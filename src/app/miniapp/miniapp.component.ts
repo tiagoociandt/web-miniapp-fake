@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CieloPay } from '../gateway/cielo-pay';
-import { Subject } from 'rxjs';
-import { PaymentFlowModel } from '../model/payment-flow-model';
-import { AuthenticationModel } from '../model/authentication-model';
-import { SetupModel } from '../model/setup-model';
+import { StoreService } from '../services/store.service';
+import { Product, Sku } from '../model/product';
+import { ProductVariant } from '../model/product-variant';
+import { ShopBagService } from '../services/shop-bag.service';
+import { ItemBag } from '../model/item-bag';
 
 @Component({
   selector: 'app-miniapp',
@@ -13,28 +14,34 @@ import { SetupModel } from '../model/setup-model';
 })
 export class MiniappComponent implements OnInit {
 
-  result = '';
+  isLoading = false;
+  products: Product[] = [];
+  variantOptions: ProductVariant[] = [];
 
   constructor(private cieloPay: CieloPay,
-              private router: Router) { }
+              private router: Router,
+              private storeService: StoreService,
+              private shopBag: ShopBagService) { }
 
   ngOnInit(): void {
-    this.startInit();
+    this.loadProducts();
   }
 
-  startInit() {
-    this.cieloPay.gateway.willSetup = (result: string) => {
-      if (result) {
-        this.cieloPay.setup = JSON.parse(result);
-      }
-    };
-    this.cieloPay.gateway.willStartAuth = (result: string) => {
-      if (result) {
-        this.cieloPay.currentAuthentication = JSON.parse(result);
-      }
-    };
-    this.cieloPay.gateway.askMeSetup();
-    this.cieloPay.gateway.askMeAuth();
+  loadProducts() {
+    this.isLoading = true;
+    this.storeService.getProductVariant()
+    .subscribe((variantOptionsData) => {
+      this.variantOptions = variantOptionsData;
+      this.storeService.getProductCollection()
+      .subscribe((productData) => {
+        this.products = productData;
+        this.isLoading = false;
+      });
+    });
+  }
+
+  getVariantOption(id: string): ProductVariant {
+    return this.variantOptions.find(search => search.options.find(option => option.variantOptionsID === id) !== undefined);
   }
 
   goToSetup() {
@@ -63,5 +70,17 @@ export class MiniappComponent implements OnInit {
 
   refundMiniApp() {
     this.router.navigate(['/refund']);
+  }
+  addToCart(sku: Sku) {
+    const newItemBag = new ItemBag();
+    newItemBag.item = sku;
+    newItemBag.quantity = 1;
+    this.shopBag.addToBag(newItemBag);
+  }
+  checkItemOnBag(skuID: string): boolean {
+    return this.shopBag.isItemBag(skuID);
+  }
+  removeFromCart(sku: Sku) {
+    this.shopBag.removeFromBag(sku.skuID);
   }
 }
