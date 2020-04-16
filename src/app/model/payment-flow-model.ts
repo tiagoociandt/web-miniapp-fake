@@ -1,3 +1,4 @@
 export class PaymentFlowModel {
-    public amount: number;
+    public value: number;
+    public installments: number;
 }

@@ -24,11 +24,25 @@ export class Gateway implements CieloPayGateway {
         this.win.willStartAuth = value;
     }
 
-    get onPaymentFlowSuccess(): any {
-        return this.win.onPaymentFlowSuccess;
+    get onPaymentsFlowSuccess(): any {
+        return this.win.onPaymentsFlowSuccess;
     }
-    set onPaymentFlowSuccess(value: any) {
-        this.win.onPaymentFlowSuccess = value;
+    set onPaymentsFlowSuccess(value: any) {
+        this.win.onPaymentsFlowSuccess = value;
+    }
+
+    get onPaymentsFlowError(): any {
+        return this.win.onPaymentsFlowError;
+    }
+    set onPaymentsFlowError(value: any) {
+        this.win.onPaymentsFlowError = value;
+    }
+
+    get onPaymentsFlowCanceled(): any {
+        return this.win.onPaymentsFlowCanceled;
+    }
+    set onPaymentsFlowCanceled(value: any) {
+        this.win.onPaymentsFlowCanceled = value;
     }
 
     get onRefundFlowSuccess(): any {

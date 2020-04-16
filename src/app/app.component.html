@@ -1,14 +1,16 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <img width="40" alt="Cielo Pay" src="../assets/Logo-Cielo_segundario.png" />
-    <span style="padding-left: 15px;">Mini app fake </span>
+    <span style="padding-left: 15px;">Miniapp fake</span>
     <span class="toolbar-spacer"></span>
-    <button mat-icon-button aria-label="Carrinho">
-      <mat-icon class="toolbar-icon" matBadge="{{ productCount }}" matBadgeHidden="{{ productCount === 0 }}" matBadgeColor="warn">shopping_cart</mat-icon>
+    <button mat-button aria-label="Carrinho" class="totalPrice">
+      <mat-icon class="toolbar-icon" matBadge="{{ productCount }}" matBadgeColor="warn" (click)="goToCheckout()">shopping_cart</mat-icon>
+      <span>R{{ productPriceTotal | currency }}</span>
     </button>
-    <button mat-icon-button aria-label="Fechar" (click)="close()">
+    <button mat-icon-button aria-label="Fechar" (click)="close()" class="close-margin">
       <mat-icon class="toolbar-icon" aria-hidden="false" aria-label="Fechar">close</mat-icon>
     </button>
+
   </mat-toolbar-row>
 </mat-toolbar>
 

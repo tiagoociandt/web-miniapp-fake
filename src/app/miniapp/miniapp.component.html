@@ -1,90 +1,66 @@
 <div class="content">
   <h2>Mini App Fake - produtos</h2>
   <p>Selecione o produto e clique em comprar</p>
-  
   <mat-divider></mat-divider>
-
   <div>
+
     <div *ngIf="isLoading">
       <mat-spinner style="margin: 0 auto;" value="indeterminate"></mat-spinner>
     </div>
-    <div *ngFor="let product of products">
-      <div *ngFor="let item of product.sku">
-        <mat-card class="product-card">
-          <mat-card-header class="card-header">
-            <img mat-card-avatar src="{{ item.images[0] }}" />
+
+    <div class="product-list">
+      <div *ngFor="let product of products" class="item">
+        <mat-card>
+          <img *ngIf="product.sku.images.length >= 1" mat-card-image src="{{ product.sku.images[0] }}"
+            class="product-card-image" />
+          <mat-card-header>
             <mat-card-title>{{ product.name }}</mat-card-title>
-            <mat-card-subtitle>Código: <strong>{{ item.sku }}</strong></mat-card-subtitle>
+            <mat-card-subtitle>Ref: <strong>{{ product.sku.sku }}</strong></mat-card-subtitle>
           </mat-card-header>
-          <!-- <img *ngIf="item.images.length >= 1" mat-card-image src="{{ item.images[1] }}" class="product-image-card" /> -->
           <mat-card-content>
-            <div *ngFor="let option of item.variantOptions">
-              <span>{{ getVariantOption(option).name }}: {{ getVariantOption(option).options[0].value }} </span>
-            </div>
-            <span>
-              Preço: <strong>R{{ item.price | currency }}</strong>
+            <span *ngFor="let option of product.sku.variantOptions">
+              <span *ngIf="getVariantName(option); let variantKeyValue">
+                <strong>{{ variantKeyValue.name }}:</strong> {{ variantKeyValue.value }}</span>
             </span>
+            <mat-divider></mat-divider>
+            <h2>R{{ product.sku.price | currency }}</h2>
           </mat-card-content>
-          <mat-card-actions>
+          <mat-card-actions align="end">
             <ng-template #removeFromBagTemplate>
-              <button mat-raised-button (click)="removeFromCart(item)">
+              <button mat-mini-fab color="warn" (click)="removeFromCart(product.sku)">
                 <mat-icon>remove_shopping_cart</mat-icon>
-                Remover
               </button>
             </ng-template>
-            <div *ngIf="!checkItemOnBag(item.skuID);else removeFromBagTemplate">
-              <button mat-raised-button (click)="addToCart(item)">
+            <div *ngIf="!checkItemOnBag(product.sku.skuID);else removeFromBagTemplate">
+              <button mat-mini-fab color="primary" (click)="addToCart(product)">
                 <mat-icon>add_shopping_cart</mat-icon>
-                Adicionar
               </button>
             </div>
           </mat-card-actions>
         </mat-card>
       </div>
     </div>
-  </div>
-  <div class="card-container">
 
-    <div class="card card-small" (click)="goToPaymentFlow()" tabindex="0">
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
-      <span>Start Payment</span>
+    <div class="card-container">
+      <div class="card card-small" (click)="goToLoading()" tabindex="0">
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
+        <span>Show Loading Modal</span>
+      </div>
+
+      <div class="card card-small" (click)="goToScannerCode()" tabindex="0">
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
+        <span>Show Scanner Code</span>
+      </div>
+
+      <div class="card card-small" (click)="refundMiniApp()" tabindex="0">
+        <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
+        <span>Refund</span>
+      </div>
     </div>
-
-    <div class="card card-small" (click)="goToLoading()" tabindex="0">
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
-
-      <span>Show Loading Modal</span>
-    </div>
-
-    <div class="card card-small" (click)="goToScannerCode()" tabindex="0">
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
-
-      <span>Show Scanner Code</span>
-    </div>
-
-    <div class="card card-small" (click)="closeMiniApp()" tabindex="0">
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
-
-      <span>Close Mini App</span>
-    </div>
-
-
-    <div class="card card-small" (click)="refundMiniApp()" tabindex="0">
-      <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
-
-      <span>Refund</span>
-    </div>
+    
   </div>
 
-  <!-- Terminal -->
-  <div class="terminal">
-    <pre>
-
-      </pre>
-  </div>
 </div>

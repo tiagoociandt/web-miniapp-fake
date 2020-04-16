@@ -9,6 +9,10 @@ import { ItemBag } from '../model/item-bag';
 export class ShopBagService {
   private shopBagLocalStorageKeyName = 'shopBagKey';
   private bag: ItemBag[] = [];
+  public get ShopBag(): ItemBag[] {
+    return this.bag;
+  }
+
   public totalItemBagSubscribe: Subject<number>;
 
   constructor() {
@@ -21,7 +25,7 @@ export class ShopBagService {
   }
 
   public removeFromBag(id: string) {
-    const found = this.bag.find(f => f.item.skuID === id);
+    const found = this.bag.find(f => f.product.sku.skuID === id);
     if (found === undefined) {
       return;
     }
@@ -33,13 +37,13 @@ export class ShopBagService {
   public sumBag(): number {
     let total = 0.0;
     this.bag.forEach(itemBag => {
-      total += (itemBag.item.price * itemBag.quantity);
+      total += (itemBag.product.sku.price * itemBag.quantity);
     });
     return total;
   }
 
   public isItemBag(id: string): boolean {
-    const found = this.bag.find(f => f.item.skuID === id);
+    const found = this.bag.find(f => f.product.sku.skuID === id);
     return found !== undefined;
   }
 

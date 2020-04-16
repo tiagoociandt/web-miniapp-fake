@@ -1,6 +1,5 @@
 .content {
   display: flex;
-  margin: 15px 10px 0px 10px;
   max-width: 2880px;
   flex-direction: column;
   align-items: center;
@@ -12,19 +11,18 @@
   flex-direction: column;
   align-items: flex-start;
 }
-
-a,
-a:visited,
-a:hover {
-  color: #204986;
-  text-decoration: none;
-}
-a:hover {
-  color: #204986;
-}
 .toolbar-icon {
   padding: 0 0px;
 }
 .toolbar-spacer {
   flex: 1 1 auto;
+}
+.totalPrice {
+  width: 120px;
+}
+.totalPrice span {
+  margin-left: 10px;
+  vertical-align: bottom;
+  align-items: center;
+  font-size: 15px;
 }

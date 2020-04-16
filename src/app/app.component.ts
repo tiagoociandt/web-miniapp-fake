@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
   async updateCart(value: any) {
     this.ngZone.run(() => {
       this.productCount = value;
+      this.productPriceTotal = this.shopBag.sumBag();
     });
   }
 
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit {
   startInit() {
     this.cieloPay.gateway.willSetup = (result: string) => {
       if (result) {
+        console.log(result);
         this.cieloPay.setup = JSON.parse(result);
       }
     };
@@ -58,5 +60,9 @@ export class AppComponent implements OnInit {
   close() {
     this.shopBag.totalItemBagSubscribe.unsubscribe();
     this.cieloPay.gateway.closeMiniApp();
+  }
+
+  goToCheckout() {
+    this.router.navigate(['/payment']);
   }
 }

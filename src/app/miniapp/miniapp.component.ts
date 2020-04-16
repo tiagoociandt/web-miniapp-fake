@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CieloPay } from '../gateway/cielo-pay';
+import { Component, OnInit, Input } from '@angular/core';
 import { StoreService } from '../services/store.service';
-import { Product, Sku } from '../model/product';
-import { ProductVariant } from '../model/product-variant';
+import { Sku } from '../model/product';
+import { ProductVariant, Option } from '../model/product-variant';
 import { ShopBagService } from '../services/shop-bag.service';
-import { ItemBag } from '../model/item-bag';
+import { ItemBag, ProductShop } from '../model/item-bag';
+import { CieloPay } from '../gateway/cielo-pay';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-miniapp',
@@ -13,47 +13,19 @@ import { ItemBag } from '../model/item-bag';
   styleUrls: ['./miniapp.component.css']
 })
 export class MiniappComponent implements OnInit {
-
   isLoading = false;
-  products: Product[] = [];
+  products: ProductShop[] = [];
   variantOptions: ProductVariant[] = [];
 
   constructor(private cieloPay: CieloPay,
               private router: Router,
               private storeService: StoreService,
-              private shopBag: ShopBagService) { }
+              private shopBag: ShopBagService) {
+    this.cieloPay.gateway.hideLoadingModal();
+  }
 
   ngOnInit(): void {
     this.loadProducts();
-  }
-
-  loadProducts() {
-    this.isLoading = true;
-    this.storeService.getProductVariant()
-    .subscribe((variantOptionsData) => {
-      this.variantOptions = variantOptionsData;
-      this.storeService.getProductCollection()
-      .subscribe((productData) => {
-        this.products = productData;
-        this.isLoading = false;
-      });
-    });
-  }
-
-  getVariantOption(id: string): ProductVariant {
-    return this.variantOptions.find(search => search.options.find(option => option.variantOptionsID === id) !== undefined);
-  }
-
-  goToSetup() {
-    this.router.navigate(['/setup']);
-  }
-
-  goToAuthentication() {
-    this.router.navigate(['/authentication']);
-  }
-
-  goToPaymentFlow() {
-    this.router.navigate(['/payment']);
   }
 
   goToLoading() {
@@ -64,16 +36,58 @@ export class MiniappComponent implements OnInit {
 
   }
 
-  closeMiniApp() {
-    this.cieloPay.gateway.closeMiniApp();
-  }
-
   refundMiniApp() {
     this.router.navigate(['/refund']);
   }
-  addToCart(sku: Sku) {
+
+  loadProducts() {
+    this.isLoading = true;
+    this.storeService.getProductVariant()
+    .subscribe((variantOptionsData) => {
+      this.variantOptions = variantOptionsData;
+      this.storeService.getProductCollection()
+      .subscribe((productData) => {
+        productData.forEach(product => {
+          product.sku.forEach(sku => {
+            const item: ProductShop = {
+              name: product.name,
+              sku
+            };
+            this.products.push(item);
+          });
+        });
+        this.isLoading = false;
+      });
+    });
+  }
+
+  getVariantName(variantOptionsID: string): VariantKeyValue {
+    const value: VariantKeyValue = {
+      name: '',
+      value: ''
+    };
+    if (!variantOptionsID) {
+      return value;
+    }
+    const variantFound = this.variantOptions.find(variant => {
+      const optionFound = variant.options.find(options => {
+        return options.variantOptionsID === variantOptionsID;
+      });
+      if (optionFound) {
+        value.value = optionFound.value;
+        return true;
+      }
+      return false;
+    });
+    if (variantFound) {
+      value.name = variantFound.name;
+    }
+    return value;
+  }
+
+  addToCart(product: ProductShop) {
     const newItemBag = new ItemBag();
-    newItemBag.item = sku;
+    newItemBag.product = product;
     newItemBag.quantity = 1;
     this.shopBag.addToBag(newItemBag);
   }
@@ -83,4 +97,9 @@ export class MiniappComponent implements OnInit {
   removeFromCart(sku: Sku) {
     this.shopBag.removeFromBag(sku.skuID);
   }
+}
+
+export interface VariantKeyValue {
+  name: string;
+  value: string;
 }

@@ -1,0 +1,16 @@
+.payment-content {
+  width: 100%;
+  align-items: center;
+}
+.table {
+  width: 100%;
+}
+.payment {
+  width: 100%;
+}
+.payment .amount {
+  width: 100%;
+}
+.payment mat-form-field {
+  width: 100%
+}
