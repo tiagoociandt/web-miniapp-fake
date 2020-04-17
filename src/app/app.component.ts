@@ -50,6 +50,7 @@ export class AppComponent implements OnInit {
     };
     this.cieloPay.gateway.willStartAuth = (result: string) => {
       if (result) {
+        console.log(result);
         this.cieloPay.currentAuthentication = JSON.parse(result);
       }
     };

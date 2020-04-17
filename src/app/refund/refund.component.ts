@@ -26,12 +26,14 @@ export class RefundComponent implements OnInit {
   ngOnInit(): void {
     this.cieloPay.gateway.onRefundFlowSuccess = (result: string) => {
       this.cieloPay.gateway.hideLoadingModal();
+      console.log(result);
       this.snack.open(`👍 resultado: ${result}`, '', {
         duration: 2000
       });
     };
     this.cieloPay.gateway.onRefundFlowError = (result: string) => {
       this.cieloPay.gateway.hideLoadingModal();
+      console.log(result);
       this.snack.open(`👎 resultado: ${result}`, '', {
         duration: 2000
       });
@@ -45,8 +47,8 @@ export class RefundComponent implements OnInit {
     }
     if (this.paymentIdFormControl.value) {
       const refund = new RefundFlowModel();
-      refund.paymentId = this.paymentIdFormControl.value;
-      this.message = `⏱ start refund with payment ${refund.paymentId}`;
+      refund.id = this.paymentIdFormControl.value;
+      this.message = `⏱ start refund with payment ${refund.id}`;
       this.cieloPay.gateway.showLoadingModal();
       this.cieloPay.gateway.startRefundFlow(refund);
     } else {

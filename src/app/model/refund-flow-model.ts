@@ -1,3 +1,3 @@
 export class RefundFlowModel {
-    paymentId: string;
+    id: string;
 }
