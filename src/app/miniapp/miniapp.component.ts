@@ -97,6 +97,9 @@ export class MiniappComponent implements OnInit {
   removeFromCart(sku: Sku) {
     this.shopBag.removeFromBag(sku.skuID);
   }
+  goToDialogs() {
+    this.router.navigate(['/dialogs']);
+  }
 }
 
 export interface VariantKeyValue {

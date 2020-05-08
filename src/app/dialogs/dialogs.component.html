@@ -1,0 +1,30 @@
+<div class="content">
+
+    <mat-card>
+        <mat-card-title>Alerta, confirm e prompt</mat-card-title>
+        <mat-card-content>
+            
+            <div class="form-group">
+                <mat-form-field class="full-width">
+                    <mat-label>Mensagem</mat-label>
+                    <input matInput [formControl]="messageFormControl" 
+                    placeholder="Digite a mensagem" 
+                    [errorStateMatcher]="matcher" />
+                    <mat-hint>Necessário informar a mensagem</mat-hint>
+                    <mat-error *ngIf="messageFormControl.hasError('required')">
+                        Mensagem é obrigatório
+                    </mat-error>
+                </mat-form-field>
+
+            </div>
+
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click)="showAlert()">Alerta</button>
+            <button mat-button (click)="showConfirm()">Confirm</button>
+            <button mat-button (click)="showPrompt()">Prompt</button>
+        </mat-card-actions>
+    </mat-card>
+
+
+</div>

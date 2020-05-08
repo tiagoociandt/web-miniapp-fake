@@ -27,6 +27,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { RefundComponent } from './refund/refund.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { DialogsComponent } from './dialogs/dialogs.component';
 
 
 
@@ -37,7 +38,8 @@ import { HttpClientModule } from '@angular/common/http';
     MiniappComponent,
     PaymentComponent,
     LoadingComponent,
-    RefundComponent
+    RefundComponent,
+    DialogsComponent
   ],
   exports: [
     MatFormFieldModule,
