@@ -22,9 +22,9 @@ export class PaymentComponent implements OnInit {
   private possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./;\'[]\=-)(*&^%$#@!~`';
 
   constructor(private bagShopService: ShopBagService,
-    private cieloPay: CieloPay,
-    private snack: MatSnackBar,
-    private router: Router) {
+              private cieloPay: CieloPay,
+              private snack: MatSnackBar,
+              private router: Router) {
     this.cieloPay.gateway.onPaymentsFlowSuccess = (result: string) => this.paymentFlowSuccess(result);
     this.cieloPay.gateway.onPaymentsFlowError = (result: string) => this.paymentFlowError(result);
     this.cieloPay.gateway.onPaymentsFlowCanceled = (result: string) => this.paymentFlowCancel(result);
