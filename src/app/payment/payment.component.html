@@ -37,4 +37,10 @@
         <div class="amount">{{ totalCart | currency }}</div>
         <button mat-raised-button color="primary" (click)="processPayment()">Pagar</button>
     </div>
+    <mat-divider></mat-divider>
+    <div>
+        <section class="section">
+            <mat-checkbox class="check-margin" [(ngModel)]="customEC">EC Customizado</mat-checkbox>
+        </section>
+    </div>
 </div>

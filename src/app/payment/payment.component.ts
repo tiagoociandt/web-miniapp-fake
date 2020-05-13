@@ -18,11 +18,13 @@ export class PaymentComponent implements OnInit {
   displayedColumns: string[] = ['productName', 'quantity', 'totalValue'];
   totalCart = 0;
   installments = 1;
+  customEC = false;
+  private possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./;\'[]\=-)(*&^%$#@!~`';
 
   constructor(private bagShopService: ShopBagService,
-              private cieloPay: CieloPay,
-              private snack: MatSnackBar,
-              private router: Router) {
+    private cieloPay: CieloPay,
+    private snack: MatSnackBar,
+    private router: Router) {
     this.cieloPay.gateway.onPaymentsFlowSuccess = (result: string) => this.paymentFlowSuccess(result);
     this.cieloPay.gateway.onPaymentsFlowError = (result: string) => this.paymentFlowError(result);
     this.cieloPay.gateway.onPaymentsFlowCanceled = (result: string) => this.paymentFlowCancel(result);
@@ -65,6 +67,17 @@ export class PaymentComponent implements OnInit {
       value: this.totalCart,
       installments: 1
     };
+    if (this.customEC) {
+      paymentFlow.merchantId = this.makeRandom(11, this.possible);
+    }
     this.cieloPay.gateway.startPaymentsFlow(paymentFlow);
+  }
+
+  private makeRandom(lengthOfCode: number, possible: string) {
+    let text = '';
+    for (let i = 0; i < lengthOfCode; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
   }
 }
