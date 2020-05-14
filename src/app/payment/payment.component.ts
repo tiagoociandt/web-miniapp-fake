@@ -5,6 +5,7 @@ import { ItemBag } from '../model/item-bag';
 import { Router } from '@angular/router';
 import { PaymentFlowModel } from '../model/payment-flow-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RandomUtils } from '../utils/random-utils';
 
 @Component({
   selector: 'app-payment',
@@ -19,12 +20,13 @@ export class PaymentComponent implements OnInit {
   totalCart = 0;
   installments = 1;
   customEC = false;
-  private possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./;\'[]\=-)(*&^%$#@!~`';
+  private possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
   constructor(private bagShopService: ShopBagService,
               private cieloPay: CieloPay,
               private snack: MatSnackBar,
-              private router: Router) {
+              private router: Router,
+              private randomUtils: RandomUtils) {
     this.cieloPay.gateway.onPaymentsFlowSuccess = (result: string) => this.paymentFlowSuccess(result);
     this.cieloPay.gateway.onPaymentsFlowError = (result: string) => this.paymentFlowError(result);
     this.cieloPay.gateway.onPaymentsFlowCanceled = (result: string) => this.paymentFlowCancel(result);
@@ -68,16 +70,8 @@ export class PaymentComponent implements OnInit {
       installments: 1
     };
     if (this.customEC) {
-      paymentFlow.merchantId = this.makeRandom(11, this.possible);
+      paymentFlow.merchantId = this.randomUtils.makeRandom(11, this.possible);
     }
     this.cieloPay.gateway.startPaymentsFlow(paymentFlow);
-  }
-
-  private makeRandom(lengthOfCode: number, possible: string) {
-    let text = '';
-    for (let i = 0; i < lengthOfCode; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
   }
 }

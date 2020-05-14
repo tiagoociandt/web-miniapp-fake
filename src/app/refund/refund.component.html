@@ -28,6 +28,12 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+                <mat-divider></mat-divider>
+                <div class="form-group">
+                    <section class="section">
+                        <mat-checkbox class="check-margin" [(ngModel)]="customEC">EC Customizado</mat-checkbox>
+                    </section>
+                </div>
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="cancel()">Cancelar</button>

@@ -5,6 +5,7 @@ import { FormControl, Validators, FormGroupDirective, NgForm } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { RandomUtils } from '../utils/random-utils';
 
 @Component({
   selector: 'app-refund',
@@ -15,12 +16,15 @@ export class RefundComponent implements OnInit {
 
   paymentIdFormControl = new FormControl('', [Validators.required]);
   matcher = new PaymentIDMatcher();
-
+  possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   message: string;
+  customEC = false;
+  private randomLenght = 11;
 
   constructor(private router: Router,
               private snack: MatSnackBar,
-              private cieloPay: CieloPay) {
+              private cieloPay: CieloPay,
+              private randomUtils: RandomUtils) {
   }
 
   ngOnInit(): void {
@@ -48,6 +52,9 @@ export class RefundComponent implements OnInit {
     if (this.paymentIdFormControl.value) {
       const refund = new RefundFlowModel();
       refund.id = this.paymentIdFormControl.value;
+      if (this.customEC) {
+        refund.merchantId = this.randomUtils.makeRandom(this.randomLenght, this.possible);
+      }
       this.message = `⏱ start refund with payment ${refund.id}`;
       this.cieloPay.gateway.showLoadingModal();
       this.cieloPay.gateway.startRefundFlow(refund);
