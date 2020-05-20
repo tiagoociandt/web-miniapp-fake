@@ -13,6 +13,9 @@ export interface CieloPayGateway {
     onRefundFlowSuccess: any;
     onRefundFlowError: any;
 
+    onLocationSuccess: any;
+    onLocationError: any;
+
     askMeSetup(): void;
     askMeAuth(): void;
     startPaymentsFlow(payment: PaymentFlowModel): void;
@@ -21,4 +24,5 @@ export interface CieloPayGateway {
     showScannerCodeReader(): void;
     closeMiniApp(): void;
     startRefundFlow(refund: RefundFlowModel): void;
+    askLocation(): void;
 }

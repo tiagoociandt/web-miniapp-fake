@@ -6,6 +6,7 @@ import { PaymentComponent } from './payment/payment.component';
 import { LoadingComponent } from './loading/loading.component';
 import { RefundComponent } from './refund/refund.component';
 import { DialogsComponent } from './dialogs/dialogs.component';
+import { LocationComponent } from './location/location.component';
 
 
 const routes: Routes = [
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'loading', component: LoadingComponent },
   { path: 'scannerCode', component: ScannerCodeComponent },
   { path: 'refund', component: RefundComponent },
-  { path: 'dialogs', component: DialogsComponent}
+  { path: 'dialogs', component: DialogsComponent },
+  { path: 'location', component: LocationComponent }
 ];
 
 @NgModule({

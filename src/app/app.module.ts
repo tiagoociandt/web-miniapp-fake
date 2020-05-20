@@ -18,6 +18,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
+import { GoogleMapsModule } from '@angular/google-maps';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ScannerCodeComponent } from './scanner-code/scanner-code.component';
@@ -29,6 +31,7 @@ import { RefundComponent } from './refund/refund.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { DialogsComponent } from './dialogs/dialogs.component';
+import { LocationComponent } from './location/location.component';
 
 
 
@@ -40,7 +43,8 @@ import { DialogsComponent } from './dialogs/dialogs.component';
     PaymentComponent,
     LoadingComponent,
     RefundComponent,
-    DialogsComponent
+    DialogsComponent,
+    LocationComponent
   ],
   exports: [
     MatFormFieldModule,
@@ -65,7 +69,8 @@ import { DialogsComponent } from './dialogs/dialogs.component';
     MatGridListModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    GoogleMapsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

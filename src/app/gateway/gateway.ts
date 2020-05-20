@@ -59,6 +59,20 @@ export class Gateway implements CieloPayGateway {
         this.win.onRefundFlowError = value;
     }
 
+    get onLocationSuccess(): any {
+        return this.win.onLocationSuccess;
+    }
+    set onLocationSuccess(value: any) {
+        this.win.onLocationSuccess = value;
+    }
+
+    get onLocationError(): any {
+        return this.win.onLocationError;
+    }
+    set onLocationError(value: any) {
+        this.win.onLocationError = value;
+    }
+
     private system = '';
 
     constructor() {
@@ -132,6 +146,14 @@ export class Gateway implements CieloPayGateway {
         try {
             const refundRequest = JSON.stringify(refund);
             this.webkit.startRefundFlow.postMessage(refund);
+        } catch (err) {
+            this.log(err);
+        }
+    }
+
+    async askLocation() {
+        try {
+            this.webkit.askLocation.postMessage('');
         } catch (err) {
             this.log(err);
         }

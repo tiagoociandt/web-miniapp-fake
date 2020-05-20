@@ -100,6 +100,9 @@ export class MiniappComponent implements OnInit {
   goToDialogs() {
     this.router.navigate(['/dialogs']);
   }
+  goToLocation() {
+    this.router.navigate(['/location']);
+  }
 }
 
 export interface VariantKeyValue {
