@@ -13,7 +13,7 @@ export class LocationComponent implements OnInit {
 
   location: LocationModel;
   message: string;
-  
+  markers = [];
   zoom = 12;
   center: google.maps.LatLngLiteral;
   options: google.maps.MapOptions = {
@@ -55,6 +55,20 @@ export class LocationComponent implements OnInit {
             lat: +this.location.lat,
             lng: +this.location.long,
           };
+          this.markers.push({
+            position: {
+              lat: +this.location.lat,
+              long: +this.location.long
+            },
+            label: {
+              color: 'red',
+              text: `Você está aqui ${this.markers.length + 1}`
+            },
+            title: `Mark ${this.markers.length + 1}`,
+            options: {
+              animation: google.maps.Animation.BOUNCE,
+            }
+          });
         });
       } else {
         this.message = 'Houve um erro!';
