@@ -70,7 +70,7 @@ export class PaymentComponent implements OnInit {
       installments: 1
     };
     if (this.customEC) {
-      paymentFlow.merchantId = this.randomUtils.makeRandom(11, this.possible);
+      paymentFlow.merchantNumber = this.randomUtils.makeRandom(11, this.possible);
     }
     this.cieloPay.gateway.startPaymentsFlow(paymentFlow);
   }

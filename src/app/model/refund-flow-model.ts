@@ -1,4 +1,4 @@
 export class RefundFlowModel {
     id: string;
-    merchantId?: string;
+    merchantNumber?: string;
 }
