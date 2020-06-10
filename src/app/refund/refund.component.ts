@@ -53,7 +53,7 @@ export class RefundComponent implements OnInit {
       const refund = new RefundFlowModel();
       refund.id = this.paymentIdFormControl.value;
       if (this.customEC) {
-        refund.merchantId = this.randomUtils.makeRandom(this.randomLenght, this.possible);
+        refund.merchantNumber = this.randomUtils.makeRandom(this.randomLenght, this.possible);
       }
       this.message = `⏱ start refund with payment ${refund.id}`;
       this.cieloPay.gateway.showLoadingModal();
