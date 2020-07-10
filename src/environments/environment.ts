@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  serverURL: 'http://10.5.3.27:3000'
+  serverURL: 'https://api-miniapps.azurewebsites.net'
 };
 
 /*
