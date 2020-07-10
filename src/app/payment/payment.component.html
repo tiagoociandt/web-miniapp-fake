@@ -34,6 +34,10 @@
                 <mat-option value="1">2 x {{ (totalCart / 2) | currency}}</mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>security info</mat-label>
+            <input matInput placeholder="Ex. abcdefg" [(ngModel)]="securityInfo">
+          </mat-form-field>
         <div class="amount">{{ totalCart | currency }}</div>
         <button mat-raised-button color="primary" (click)="processPayment()">Pagar</button>
     </div>

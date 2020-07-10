@@ -20,6 +20,7 @@ export class PaymentComponent implements OnInit {
   totalCart = 0;
   installments = 1;
   customEC = false;
+  securityInfo = '';
   private possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
   constructor(private bagShopService: ShopBagService,
@@ -71,6 +72,9 @@ export class PaymentComponent implements OnInit {
     };
     if (this.customEC) {
       paymentFlow.merchantNumber = this.randomUtils.makeRandom(11, this.possible);
+    }
+    if (this.securityInfo) {
+      paymentFlow.securityInfo = this.securityInfo;
     }
     this.cieloPay.gateway.startPaymentsFlow(paymentFlow);
   }
